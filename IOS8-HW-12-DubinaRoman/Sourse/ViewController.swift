@@ -27,9 +27,18 @@ class ViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 25
         button.backgroundColor = .black
+        button.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
         return button
     }()
-
+    
+    private lazy var shapeView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "elipse")
+        return imageView
+    }()
+    
+    var duration = 30
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
@@ -48,24 +57,42 @@ class ViewController: UIViewController {
     private func setupHierarchy() {
         view.addSubview(labelTimer)
         view.addSubview(startButton)
+        view.addSubview(shapeView)
     }
     
     private func setupLayout() {
         
         labelTimer.snp.makeConstraints { make in
-            make.centerY.equalTo(view).offset(-170)
+            make.center.equalTo(shapeView.snp.center)
             make.centerX.equalTo(view)
         }
         
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(labelTimer.snp.bottom).offset(60)
+            make.top.equalTo(labelTimer.snp.bottom).offset(30)
             make.centerX.equalTo(view)
             make.height.equalTo(50)
             make.width.equalTo(50)
         }
+        
+        shapeView.snp.makeConstraints { make in
+            make.center.equalTo(view)
+            make.height.equalTo(300)
+            make.width.equalTo(300)
+        }
     }
     
     // MARK: Actions
+    
+    @objc private func startTimer() {
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            self.jobTimer()
+        }
+    }
+    
+    @objc private func jobTimer() {
+        duration -= 1
+        labelTimer.text = "\(duration)"
+    }
     
 }
 
