@@ -10,11 +10,19 @@ import SnapKit
 
 class ViewController: UIViewController {
     
+    var timer = Timer()
+    
+    var duration = 30
+    
+    var bool = false
+    
+    var bool2 = false
+    
     // MARK: - UI Elements
     
     private lazy var labelTimer: UILabel = {
         let label = UILabel()
-        label.text = "1"
+        label.text = "GO!"
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 80)
         label.textAlignment = .center
@@ -37,8 +45,6 @@ class ViewController: UIViewController {
         return imageView
     }()
     
-    var duration = 30
-    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
@@ -51,7 +57,7 @@ class ViewController: UIViewController {
     // MARK: - Setups
     
     private func setupView() {
-        view.backgroundColor = .white
+       view.backgroundColor = .white
     }
     
     private func setupHierarchy() {
@@ -84,15 +90,40 @@ class ViewController: UIViewController {
     // MARK: Actions
     
     @objc private func startTimer() {
-        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            self.jobTimer()
+        
+        if bool == false {
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                self.jobTimer()
+            }
+            startButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+        } else {
+            timer.invalidate()
+            startButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            bool = false
         }
     }
     
     @objc private func jobTimer() {
-        duration -= 1
-        labelTimer.text = "\(duration)"
+        if bool2 == false {
+            view.backgroundColor = .green
+            duration -= 1
+            labelTimer.text = "\(duration)"
+            bool = true
+        } else {
+            view.backgroundColor = .red
+            duration -= 1
+            labelTimer.text = "\(duration)"
+            bool = true
+            if duration == 0 {
+                duration = 30
+                bool2 = false
+            }
+        }
+            
+        if duration == 0 {
+            duration = 5
+            bool2 = true
+        }
     }
-    
 }
 
