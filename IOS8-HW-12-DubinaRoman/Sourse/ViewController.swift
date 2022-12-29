@@ -10,13 +10,13 @@ import SnapKit
 
 class ViewController: UIViewController {
     
-    var timer = Timer()
+    // MARK: - Elements to timer
     
-    var duration = 30
+    private var timer = Timer()
+    private var duration = 30
     
-    var bool = false
-    
-    var bool2 = false
+    private var isWorkTime = true
+    private var isStarted = false
     
     // MARK: - UI Elements
     
@@ -91,38 +91,38 @@ class ViewController: UIViewController {
     
     @objc private func startTimer() {
         
-        if bool == false {
+        if !isStarted {
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.jobTimer()
             }
             startButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            isStarted = true
         } else {
             timer.invalidate()
             startButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-            bool = false
+            isStarted = false
         }
     }
     
     @objc private func jobTimer() {
-        if bool2 == false {
+        
+        if isWorkTime {
             view.backgroundColor = .green
             duration -= 1
             labelTimer.text = "\(duration)"
-            bool = true
         } else {
             view.backgroundColor = .red
             duration -= 1
             labelTimer.text = "\(duration)"
-            bool = true
             if duration == 0 {
                 duration = 30
-                bool2 = false
+                isWorkTime = true
             }
         }
             
         if duration == 0 {
             duration = 5
-            bool2 = true
+            isWorkTime = false
         }
     }
 }
