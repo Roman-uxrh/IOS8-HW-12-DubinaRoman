@@ -89,9 +89,18 @@ class ViewController: UIViewController {
     
     // MARK: Actions
     
+    func formatTime() -> String {
+        let time = Double(duration)
+        let format = DateComponentsFormatter()
+        format.zeroFormattingBehavior = .pad
+        format.allowedUnits = [.minute, .second]
+        return format.string(from: time ) ?? "00:00"
+    }
+    
     @objc private func startTimer() {
         
         if !isStarted {
+            labelTimer.text = formatTime()
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                 self.jobTimer()
             }
@@ -109,11 +118,11 @@ class ViewController: UIViewController {
         if isWorkTime {
             view.backgroundColor = .green
             duration -= 1
-            labelTimer.text = "\(duration)"
+            labelTimer.text = formatTime()
         } else {
             view.backgroundColor = .red
             duration -= 1
-            labelTimer.text = "\(duration)"
+            labelTimer.text = formatTime()
             if duration == 0 {
                 duration = 30
                 isWorkTime = true
