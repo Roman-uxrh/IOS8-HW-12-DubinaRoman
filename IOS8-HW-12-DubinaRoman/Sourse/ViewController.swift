@@ -20,7 +20,16 @@ class ViewController: UIViewController {
     
     // MARK: - UI Elements
     
-    private lazy var labelTimer: UILabel = {
+    private lazy var textLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Are you ready?"
+        label.textColor = .black
+        label.font = UIFont.boldSystemFont(ofSize: 40)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var timerLabel: UILabel = {
         let label = UILabel()
         label.text = "GO!"
         label.textColor = .black
@@ -29,12 +38,16 @@ class ViewController: UIViewController {
         return label
     }()
     
+    private lazy var startImage: UIImageView = {
+        let image = UIImageView(image: UIImage(systemName: "play.fill"))
+        image.tintColor = .black
+        return image
+    }()
+    
     private lazy var startButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "play.fill"), for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 25
-        button.backgroundColor = .black
+        button.layer.cornerRadius = 75
         button.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
         return button
     }()
@@ -61,23 +74,33 @@ class ViewController: UIViewController {
     }
     
     private func setupHierarchy() {
-        view.addSubview(labelTimer)
-        view.addSubview(startButton)
-        view.addSubview(shapeView)
+        [textLabel, timerLabel, startImage, startButton, shapeView].forEach { view.addSubview($0) }
     }
     
     private func setupLayout() {
         
-        labelTimer.snp.makeConstraints { make in
+        textLabel.snp.makeConstraints { make in
+            make.top.equalTo(view).offset(100)
+            make.centerX.equalTo(view)
+        }
+        
+        timerLabel.snp.makeConstraints { make in
             make.center.equalTo(shapeView.snp.center)
             make.centerX.equalTo(view)
         }
         
-        startButton.snp.makeConstraints { make in
-            make.top.equalTo(labelTimer.snp.bottom).offset(30)
+        startImage.snp.makeConstraints { make in
+            make.top.equalTo(shapeView.snp.bottom).offset(40)
             make.centerX.equalTo(view)
-            make.height.equalTo(50)
-            make.width.equalTo(50)
+            make.height.equalTo(100)
+            make.width.equalTo(100)
+        }
+        
+        startButton.snp.makeConstraints { make in
+            make.top.equalTo(shapeView.snp.bottom).offset(40)
+            make.centerX.equalTo(view)
+            make.height.equalTo(100)
+            make.width.equalTo(100)
         }
         
         shapeView.snp.makeConstraints { make in
@@ -100,15 +123,15 @@ class ViewController: UIViewController {
     @objc private func startTimer() {
         
         if !isStarted {
-            labelTimer.text = formatTime()
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            timerLabel.text = formatTime()
+            timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { timer in
                 self.jobTimer()
             }
-            startButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            startImage.image = UIImage(systemName: "pause.fill")
             isStarted = true
         } else {
             timer.invalidate()
-            startButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+            startImage.image = UIImage(systemName: "play.fill")
             isStarted = false
         }
     }
@@ -118,11 +141,13 @@ class ViewController: UIViewController {
         if isWorkTime {
             view.backgroundColor = .green
             duration -= 1
-            labelTimer.text = formatTime()
+            timerLabel.text = formatTime()
+            textLabel.text = "Never stop dansing!!"
         } else {
             view.backgroundColor = .red
             duration -= 1
-            labelTimer.text = formatTime()
+            timerLabel.text = formatTime()
+            textLabel.text = "Relax baby)"
             if duration == 0 {
                 duration = 30
                 isWorkTime = true
