@@ -130,7 +130,7 @@ class ViewController: UIViewController {
     @objc private func startTimer() {
         
         if !isStarted {
-            basicAnimation()
+            basicAnimation(duration: TimeInterval(duration))
             timerLabel.text = formatTime()
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
                 self.jobTimer()
@@ -139,6 +139,7 @@ class ViewController: UIViewController {
             isStarted = true
         } else {
             timer.invalidate()
+            shapeLayer.removeAnimation(forKey: "basicAnimation")
             startImage.image = UIImage(systemName: "play.fill")
             isStarted = false
         }
@@ -151,11 +152,13 @@ class ViewController: UIViewController {
             duration -= 1
             timerLabel.text = formatTime()
             textLabel.text = "Never stop dansing!!"
+//            basicAnimation(duration: TimeInterval(duration))
         } else {
             view.backgroundColor = .red
             duration -= 1
             timerLabel.text = formatTime()
             textLabel.text = "Relax baby)"
+            basicAnimation(duration: TimeInterval(duration))
             if duration == 0 {
                 duration = 30
                 isWorkTime = true
@@ -167,6 +170,8 @@ class ViewController: UIViewController {
             isWorkTime = false
         }
     }
+    
+    // MARK: Action animation
     
     func animationCircular() {
         
@@ -185,13 +190,13 @@ class ViewController: UIViewController {
         shapeView.layer.addSublayer(shapeLayer)
     }
     
-    func basicAnimation() {
+    func basicAnimation(duration: TimeInterval) {
         
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
         basicAnimation.toValue = 0
         basicAnimation.duration = CFTimeInterval(duration)
-        basicAnimation.fillMode = CAMediaTimingFillMode.forwards
+        basicAnimation.fillMode = .forwards
         basicAnimation.isRemovedOnCompletion = true
         shapeLayer.add(basicAnimation, forKey: "basicAnimation")
     }
