@@ -18,6 +18,8 @@ class ViewController: UIViewController {
     private var isWorkTime = true
     private var isStarted = false
     
+    private let shapeLayer = CAShapeLayer()
+    
     // MARK: - UI Elements
     
     private lazy var textLabel: UILabel = {
@@ -59,6 +61,11 @@ class ViewController: UIViewController {
     }()
     
     // MARK: - Life Cycle
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.animationCircular()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,8 +130,9 @@ class ViewController: UIViewController {
     @objc private func startTimer() {
         
         if !isStarted {
+            basicAnimation()
             timerLabel.text = formatTime()
-            timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { timer in
+            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
                 self.jobTimer()
             }
             startImage.image = UIImage(systemName: "pause.fill")
@@ -158,6 +166,34 @@ class ViewController: UIViewController {
             duration = 5
             isWorkTime = false
         }
+    }
+    
+    func animationCircular() {
+        
+        let center = CGPoint(x: shapeView.frame.width / 2, y: shapeView.frame.height / 2)
+        let endAngle = (-CGFloat.pi / 2)
+        let startAngle = 2 * CGFloat.pi + endAngle
+        
+        let circularPath = UIBezierPath(arcCenter: center, radius: 145, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+        
+        shapeLayer.path = circularPath.cgPath
+        shapeLayer.lineWidth = 17
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeEnd = 1
+        shapeLayer.lineCap = CAShapeLayerLineCap.round
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        shapeView.layer.addSublayer(shapeLayer)
+    }
+    
+    func basicAnimation() {
+        
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        
+        basicAnimation.toValue = 0
+        basicAnimation.duration = CFTimeInterval(duration)
+        basicAnimation.fillMode = CAMediaTimingFillMode.forwards
+        basicAnimation.isRemovedOnCompletion = true
+        shapeLayer.add(basicAnimation, forKey: "basicAnimation")
     }
 }
 
