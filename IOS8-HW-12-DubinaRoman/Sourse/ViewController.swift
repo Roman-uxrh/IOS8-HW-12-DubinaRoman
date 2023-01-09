@@ -9,8 +9,7 @@ import UIKit
 import SnapKit
 
 class ViewController: UIViewController {
-    
-    // MARK: - Elements to timer
+    // MARK: - Properties
     
     private var timer = Timer()
     private var duration = 30
@@ -20,7 +19,7 @@ class ViewController: UIViewController {
     
     private let shapeLayer = CAShapeLayer()
     
-    // MARK: - UI Elements
+    // MARK: - Views
     
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -74,14 +73,18 @@ class ViewController: UIViewController {
         setupLayout()
     }
     
-    // MARK: - Setups
+    // MARK: - Setups - строка 77 заменить на // MARK: - Private methods и добавить extension ViewController
     
     private func setupView() {
        view.backgroundColor = .white
     }
     
     private func setupHierarchy() {
-        [textLabel, timerLabel, startImage, startButton, shapeView].forEach { view.addSubview($0) }
+        [textLabel,
+         timerLabel,
+         startImage,
+         startButton,
+         shapeView].forEach { view.addSubview($0) }
     }
     
     private func setupLayout() {
@@ -99,37 +102,27 @@ class ViewController: UIViewController {
         startImage.snp.makeConstraints { make in
             make.top.equalTo(shapeView.snp.bottom).offset(40)
             make.centerX.equalTo(view)
-            make.height.equalTo(100)
-            make.width.equalTo(100)
+            make.height.width.equalTo(100)
         }
         
         startButton.snp.makeConstraints { make in
             make.top.equalTo(shapeView.snp.bottom).offset(40)
             make.centerX.equalTo(view)
-            make.height.equalTo(100)
-            make.width.equalTo(100)
+            make.height.width.equalTo(100)
         }
         
         shapeView.snp.makeConstraints { make in
             make.center.equalTo(view)
-            make.height.equalTo(300)
-            make.width.equalTo(300)
+            make.height.width.equalTo(300)
         }
     }
     
     // MARK: Actions
     
-    func formatTime() -> String {
-        let time = Double(duration)
-        let format = DateComponentsFormatter()
-        format.zeroFormattingBehavior = .pad
-        format.allowedUnits = [.minute, .second]
-        return format.string(from: time ) ?? "00:00"
-    }
-    
     @objc private func startTimer() {
         
         if !isStarted {
+            view.backgroundColor = .green
             basicAnimation(duration: TimeInterval(duration))
             timerLabel.text = formatTime()
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
@@ -152,7 +145,6 @@ class ViewController: UIViewController {
             duration -= 1
             timerLabel.text = formatTime()
             textLabel.text = "Never stop dansing!!"
-//            basicAnimation(duration: TimeInterval(duration))
         } else {
             view.backgroundColor = .red
             duration -= 1
@@ -202,3 +194,13 @@ class ViewController: UIViewController {
     }
 }
 
+extension ViewController {
+    
+    private func formatTime() -> String {
+        let time = Double(duration)
+        let format = DateComponentsFormatter()
+        format.zeroFormattingBehavior = .pad
+        format.allowedUnits = [.minute, .second]
+        return format.string(from: time ) ?? "00:00"
+    }
+}
